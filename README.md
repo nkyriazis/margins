@@ -5,6 +5,10 @@
 
 **Talk to your coding agent inside a file, in your own editor, instead of the chat.**
 
+<p align="center">
+  <img src="docs/demo.gif" width="900" alt="Claude Code on the left, decisions.md open in Neovim on the right. Claude writes two open calls about cart.py into the file and starts watching it, and a band above the prompt reads 'decisions.md, turn 1, your turn, watching'. The author types 'yes' under the first item and 'clamp it to 0-100, and add a test for both' under the second, then saves. Claude's replies appear in the editor under each answer, the code is changed and tested, and the dialog closes with a summary line while the band reads 'closed after 5 turns'.">
+</p>
+
 Some work is a list of decisions: five open calls on a release, a review with a dozen comments, a plan with questions on every step. In the chat, each answer scrolls the last one away. You can't answer item 3 before item 1, and a week later the decisions are buried in a transcript.
 
 With margins, Claude writes the open questions into a file, each with its context and a default. You answer in your editor, in any order, and save. Each save is a turn. Claude reads what you changed, replies beneath your words in the file, and acts on what you decided. The file keeps the whole thread under each item, and it has a git history of its own, so every turn can be undone.
@@ -47,7 +51,7 @@ Restart Claude Code. For other agents, or just the skill without the plugin, see
 Ask for it when a task turns into a list of decisions:
 
 ```
-let's do this in margins: write the open calls to decisions.md and watch it
+review cart.py and put your open calls in decisions.md with margins, then watch it
 ```
 
 Or hand Claude a file you already have:
