@@ -78,3 +78,18 @@ test('nothing shows without a dialog', async ($, on) => {
   const ui = await band($, world(on, ''))
   expect(await ui.find({ type: 'Text', text: /plan\.md/ })).toBeUndefined()
 })
+
+test('a typed prompt clears a closed dialog, a notification does not', async ($, on) => {
+  const closed = OPEN + LOG([['1792047070', 'closed', '/work/plan.md', '5']])
+  const clock = world(on, closed)
+  on('prompt.submit', () => ({ text: 'ok' }))
+  await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' })
+  await clock.advance(1000)
+  await clock.advance(10_000)
+  await $.prompt.submit({ text: 'the watch ended', origin: { kind: 'task-notification' } })
+  let ui = await $.ui.mount(BAND)
+  expect(await ui.find({ type: 'Text', text: /closed after 5 turns/ })).toBeDefined()
+  await $.prompt.submit({ text: 'thanks', origin: { kind: 'composer' } })
+  ui = await $.ui.mount({ ...BAND, requestId: 'band2' })
+  expect(await ui.find({ type: 'Text', text: /closed after 5 turns/ })).toBeUndefined()
+})

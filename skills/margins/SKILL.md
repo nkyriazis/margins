@@ -25,7 +25,8 @@ file holds the whole thread, in order, under each item.
    the question, the context they need and the default. End each item with
    the question it asks.
 2. `margins.sh init <file>`: a history of its
-   own, `.<name>.dialog.git` beside the file, never the project's repo and
+   own beside the file, at the path it prints (`.<name>.dialog.git`, the
+   name without its extension), never the project's repo and
    never staged there. The project's `.gitignore` should already cover the
    folder; check, and say if it does not.
 3. Arm a Monitor with `margins.sh watch <file>`, `timeout_ms` at the maximum,

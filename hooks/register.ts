@@ -15,7 +15,8 @@ let ownNs = ''
 let dialogs: Dialog[] = []
 let live = new Set<string>()
 let checked = 0
-// Closed dialogs leave the band at the first prompt after they closed.
+// Closed dialogs leave the band at the first prompt the person sends after
+// they closed; the watch's own end notification is not one.
 let promptedAt = 0
 
 // The session's state file, resolved the way margins.sh resolves it
@@ -99,6 +100,7 @@ export function register(on) {
 
   on('prompt.submit', async ($, e, next) => {
     try {
+      if (e.origin?.kind !== 'composer' && e.origin?.kind !== 'bridge') return next(e)
       promptedAt = (await $.clock.now()) / 1000
       if (dialogs.some((d) => d.phase === 'closed')) $.ui.invalidate('ui.render')
     } catch {
