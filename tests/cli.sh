@@ -89,6 +89,10 @@ case $events in
 *) no "the state file records each step" "$events" ;;
 esac
 
+mkdir ignored && printf 'notes.md\n' > ignored/.gitignore && echo hi > ignored/notes.md
+check "init versions a file the folder's .gitignore lists" "$M" init ignored/notes.md
+if git --git-dir=ignored/.notes.dialog.git rev-parse -q --verify HEAD > /dev/null; then ok "an ignored file still gets its first turn"; else no "an ignored file still gets its first turn"; fi
+
 git -C "$T" status > /dev/null 2>&1 && no "no repository is made in the folder itself" || ok "no repository is made in the folder itself"
 "$M" version | grep -q "^margins [0-9]" && ok "version" || no "version"
 

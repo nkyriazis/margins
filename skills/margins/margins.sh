@@ -55,7 +55,9 @@ init)
         "${G[@]}" config core.bare false
         "${G[@]}" config user.name "$(git config user.name || echo author)"
         "${G[@]}" config user.email "$(git config user.email || echo author@localhost)"
-        "${G[@]}" add -- "$base"
+        # -f: the folder's own .gitignore applies to this history too, and a
+        # dialog file is often listed there to keep it out of the project.
+        "${G[@]}" add -f -- "$base"
         "${G[@]}" commit -qm "v0" -- "$base"
         echo "versioned: $dir/.${base%.*}.dialog.git"
     fi
