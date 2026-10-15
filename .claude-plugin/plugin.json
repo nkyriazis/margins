@@ -1,0 +1,10 @@
+{
+  "name": "margins",
+  "version": "1.0.0",
+  "description": "Talk to Claude inside a file instead of the chat: you save, Claude answers beneath what you wrote, in your own editor, with the whole thread versioned.",
+  "author": { "name": "Nikolaos Kyriazis", "email": "nkyriazis@gmail.com", "url": "https://github.com/nkyriazis" },
+  "homepage": "https://github.com/nkyriazis/margins",
+  "repository": "https://github.com/nkyriazis/margins",
+  "license": "MIT",
+  "keywords": ["editor", "dialog", "decisions", "review", "markdown", "git", "watch", "skill", "mod"]
+}

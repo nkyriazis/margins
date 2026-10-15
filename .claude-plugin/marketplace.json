@@ -1,0 +1,12 @@
+{
+  "name": "margins",
+  "owner": { "name": "Nikolaos Kyriazis", "email": "nkyriazis@gmail.com" },
+  "description": "margins: talk to Claude inside a file, in your own editor",
+  "plugins": [
+    {
+      "name": "margins",
+      "source": "./",
+      "description": "Hold a conversation inside a file: each save is a turn, Claude answers beneath what you wrote and applies what you decide."
+    }
+  ]
+}

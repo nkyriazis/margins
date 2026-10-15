@@ -1,11 +1,16 @@
 ---
-name: file-dialog
-description: Hold a conversation inside a file instead of the chat. The file gets its own git history, a watch fires on each of the user's saves, and Claude reads the diff, answers in place beneath what they wrote, and acts on what they decided. Use when the user says to "watch" a file, to answer "in the file", to put a file "in isolated versioning", or to work through a list of open calls by editing a document.
+name: margins
+description: Hold a conversation inside a file instead of the chat, answering in its margins. The file gets its own git history, a watch fires on each of the user's saves, and Claude reads the diff, answers in place beneath what they wrote, and acts on what they decided. Use when the user says to "watch" a file, to answer "in the file", to put a file "in isolated versioning", or to work through a list of open calls by editing a document.
 ---
 
-# File dialog
+# margins
 
-The user's brief, 2026-10-14: "put this file in isolated versioning and
+`margins.sh` is in this skill's directory; below, `margins.sh` means its full
+path, `${CLAUDE_SKILL_DIR}/margins.sh` (if your agent leaves that unfilled,
+the directory this SKILL.md is in, usually `~/.claude/skills/margins`). With
+the Claude Code plugin, `margins` is also on the Bash tool's PATH.
+
+The brief this grew from, 2026-10-14: "put this file in isolated versioning and
 watch it. each time i save you read the diff and pick up the conversation
 there." It worked for five open calls on a video edit, in one file, with
 replies, questions back, and decisions applied as they landed: "I liked
@@ -19,30 +24,32 @@ file holds the whole thread, in order, under each item.
 1. Write the file (or take the user's). One item per numbered section, with
    the question, the context they need and the default. End each item with
    the question it asks.
-2. `~/.claude/skills/file-dialog/dialog.sh init <file>`: a history of its
+2. `margins.sh init <file>`: a history of its
    own, `.<name>.dialog.git` beside the file, never the project's repo and
    never staged there. The project's `.gitignore` should already cover the
    folder; check, and say if it does not.
-3. Arm a Monitor with `dialog.sh watch <file>`, `timeout_ms` at the maximum,
+3. Arm a Monitor with `margins.sh watch <file>`, `timeout_ms` at the maximum,
    described as "saves to <file>". It emits only when the file, once still
    for two seconds, differs from the last turn, so a reply Claude writes and
    commits does not fire it. Re-arm on every expiry until the dialog ends.
+   Without a Monitor tool, run the watch in the background and read its output after each turn.
 4. Tell the user the path, that each save is a turn, and that anything
-   unanswered keeps its default.
+   unanswered keeps its default. With the plugin, a band above their prompt
+   shows whose turn it is and whether the file is watched.
 
 ## Each turn
 
-1. `dialog.sh turn <file>`: prints every line the user added or changed,
+1. `margins.sh turn <file>`: prints every line the user added or changed,
    numbered as the file now stands ("author line 25: Nikos. Under load
    ..."), what they removed, and the diff, then commits it as their turn. Read it whole, and never pipe it into `head` or `sed q`: a cut
    pipe kills it before the commit, and the same turn comes back next time. If it says "no edit since the last turn", the event
    was ours or a no-op save: say nothing in the file.
-2. Sort each block the way the react-loop sorts a note: a decision ("yes",
+2. Sort each block: a decision ("yes",
    "go with yours", their own words) is applied in the project now; a
    question is answered; an idea with a question mark is built, with any
    objection in one line beside it.
 3. Write each reply to a scratch file and place it with
-   `dialog.sh reply <file> <line> <scratch>`, where `<line>` is the number of
+   `margins.sh reply <file> <line> <scratch>`, where `<line>` is the number of
    the last line of *their words* in that item, from step 1. A changed
    line can be a box ticked on the next item's heading: replying after it
    lands the reply inside the wrong item (it nearly did on the second
@@ -66,7 +73,7 @@ wondering whether the other is still listening.
   or the user writes that it is done ("done", "that's all", "end"), or
   says so in the chat.
 - **Then**, in this order:
-  1. `dialog.sh end <file> "<what was decided, what was applied, what is left>"`
+  1. `margins.sh end <file> "<what was decided, what was applied, what is left>"`
      appends a `DIALOG CLOSED.` line naming the outcome, commits it and tags
      the history `closed`. The watch sees the tag and exits on its own,
      printing "dialog closed, watch ended"; that event is the proof it
@@ -76,8 +83,10 @@ wondering whether the other is still listening.
      watched any more.
 - **An expiry is not an end.** A watch that times out while items are
   still open is re-armed, and the chat says nothing. Expiry with every item
-  closed and no `end` run is a missed end: run it.
-- **Reopen** only when asked: `dialog.sh reopen <file>`, then arm the
+  closed and no `end` run is a missed end: run it. With the plugin, a Stop
+  hook holds the turn open while a dialog has no live watch and says what to
+  run; do that, or `end` the dialog if it is over.
+- **Reopen** only when asked: `margins.sh reopen <file>`, then arm the
   watch again.
 
 ## Rules

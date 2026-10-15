@@ -1,0 +1,11 @@
+{
+  "description": "margins: a band above the prompt saying whose turn it is in each dialog and whether its file is watched; a Stop hook that keeps a dialog from being left without a watch",
+  "modules": ["./register.ts"],
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/margins/hooks/rearm.sh\"", "timeout": 5 }]
+      }
+    ]
+  }
+}
